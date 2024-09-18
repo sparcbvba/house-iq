@@ -1,0 +1,50 @@
+<!-- src/views/user_form.ejs -->
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Nieuwe Gebruiker Toevoegen</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">Nieuwe Gebruiker Toevoegen aan Installatie <%= installationId %></h2>
+        <form action="/installations/<%= installationId %>/users" method="POST">
+            <div class="form-group">
+                <label for="username">Gebruikersnaam:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Wachtwoord:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select class="form-control" id="type" name="type" required>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="preferred">Voorkeursgebruiker:</label>
+                <input type="checkbox" id="preferred" name="preferred" value="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="longlivingtoken">Long-Living Token:</label>
+                <input type="text" class="form-control" id="longlivingtoken" name="longlivingtoken" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Toevoegen</button>
+        </form>
+        <a href="/installations/<%= installationId %>/users" class="btn btn-secondary mt-3">Terug naar Gebruikerslijst</a>
+    </div>
+
+    <!-- Bootstrap JS en afhankelijkheden -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

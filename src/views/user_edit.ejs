@@ -1,0 +1,50 @@
+<!-- src/views/user_edit.ejs -->
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Gebruiker Bewerken</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">Gebruiker Bewerken</h2>
+        <form action="/users/<%= user.id %>" method="POST">
+            <div class="form-group">
+                <label for="username">Gebruikersnaam:</label>
+                <input type="text" class="form-control" id="username" name="username" value="<%= user.username %>" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Nieuw Wachtwoord (laat leeg om niet te wijzigen):</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select class="form-control" id="type" name="type" required>
+                    <option value="admin" <% if (user.type === 'admin') { %>selected<% } %>>Admin</option>
+                    <option value="user" <% if (user.type === 'user') { %>selected<% } %>>User</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="preferred">Voorkeursgebruiker:</label>
+                <input type="checkbox" id="preferred" name="preferred" value="1" <% if (user && user.preferred === 1) { %>checked<% } %>>
+            </div>
+            
+            <div class="form-group">
+                <label for="longlivingtoken">Nieuw Long-Living Token (laat leeg om niet te wijzigen):</label>
+                <input type="text" class="form-control" id="longlivingtoken" name="longlivingtoken">
+            </div>
+            <button type="submit" class="btn btn-primary">Opslaan</button>
+        </form>
+        <a href="/installations/<%= user.installation_id %>/users" class="btn btn-secondary mt-3">Terug naar Gebruikerslijst</a>
+    </div>
+
+    <!-- Bootstrap JS en afhankelijkheden -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

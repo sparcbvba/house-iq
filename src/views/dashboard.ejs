@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">Welkom op het Dashboard</h2>
+
+        <!-- Knop om een nieuwe installatie te registreren -->
+        <a href="/installations/new" class="btn btn-primary mb-4">Nieuwe Installatie Registreren</a>
+
+        <!-- Overzicht van installaties -->
+        <h3>Geregistreerde Installaties</h3>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>URL</th>
+                    <th>Status</th>
+                    <th>Versie</th>
+                    <th>Update Beschikbaar</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% installations.forEach(function(installation) { %>
+                    <tr>
+                        <td><%= installation.name %></td>
+                        <td><%= installation.url %></td>
+                        <td>
+                            <% if (installation.status === 'online') { %>
+                                <span class="text-success">&#9679; Online</span>
+                            <% } else if (installation.status === 'offline') { %>
+                                <span class="text-danger">&#9679; Offline</span>
+                            <% } else { %>
+                                <span class="text-secondary">&#9679; Onbekend</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (installation.installed_version !== 'onbekend') { %>
+                                <span class="badge badge-success"><%= installation.installed_version %></span>
+                            <% } else { %>
+                                <span class="badge badge-secondary">Onbekend</span>
+                            <% } %>
+                        </td>
+
+                        <td>
+
+                            <% if (installation.installed_version === 'onbekend') { %>
+                                <span class="badge badge-secondary">Onbekend</span>
+                            <% } else if (installation.update_available === 1) { %>
+                                <span class="badge badge-warning"><%= installation.latest_version %></span>
+                            <% } else if (installation.update_available === 0) { %>
+                                <span class="badge badge-success"><%= installation.installed_version %></span>
+                            <% } else { %>
+                                <span class="badge badge-secondary">Onbekend</span>
+                            <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/installations/<%= installation.id %>/edit" class="btn btn-sm btn-secondary">Bewerken</a>
+                            <!-- Refresh knop -->
+                            <form action="/installations/<%= installation.id %>/refresh" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-info">Refresh</button>
+                            </form>
+                            <!-- Openen knop -->
+                            <!-- ... bestaande code voor openen knop ... -->
+                            <!-- Nieuwe knop om gebruikers te beheren -->
+                            <a href="/installations/<%= installation.id %>/users" class="btn btn-sm btn-warning">Gebruikers</a>
+                        </td>
+
+                    </tr>
+                <% }); %>
+            </tbody>
+</table>
+
+    </div>
+
+    <!-- Bootstrap JS en afhankelijkheden -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+

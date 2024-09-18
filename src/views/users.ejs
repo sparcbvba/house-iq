@@ -1,0 +1,47 @@
+<!-- src/views/users.ejs -->
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Gebruikers voor Installatie</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">Gebruikers voor Installatie: <%= installation.name %></h2>
+        <p>
+            <a href="<%= installationLink %>" target="_blank"><%= installationLink %></a>
+        </p>        
+        <a href="/installations/<%= installation.id %>/users/new" class="btn btn-primary mb-3">Nieuwe Gebruiker Toevoegen</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Gebruikersnaam</th>
+                    <th>Type</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(function(user) { %>
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.type %></td>
+                        <td>
+                            <a href="/users/<%= user.id %>/edit" class="btn btn-sm btn-secondary">Bewerken</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <a href="/dashboard" class="btn btn-secondary mt-3">Terug naar Dashboard</a>
+    </div>
+
+    <!-- Bootstrap JS en afhankelijkheden -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
