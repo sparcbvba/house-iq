@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "Web applicatie met Node.js, Express en TypeScript",
   "main": "dist/app.js",
+  "engines": {
+    "node": ">=14.x",
+    "npm": ">=6.x"
+  },
   "scripts": {
     "start": "node dist/app.js",
     "build": "tsc",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
-    "migrate": "ts-node migrate.ts"
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
