@@ -55,6 +55,19 @@ export class UserController {
             res.status(500).send('Er is een fout opgetreden bij het aanmaken van de gebruiker.');
         }
     };
+
+    public deactivateUser = async (req: Request, res: Response) => {
+        try {
+            const userId = parseInt(req.params.userId, 10);
+            await this.userService.deactivateUser(userId);
+            res.redirect(`/installations/${req.params.installationId}/users`);
+        } catch (error) {
+            logger.error('Fout bij het deactiveren van gebruiker:', error);
+            res.status(500).send('Er is een fout opgetreden bij het deactiveren van de gebruiker.');
+        }
+    };
+    
+    
     
     
 

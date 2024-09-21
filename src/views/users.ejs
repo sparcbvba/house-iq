@@ -31,6 +31,10 @@
                         <td><%= user.type %></td>
                         <td>
                             <a href="/users/<%= user.id %>/edit" class="btn btn-sm btn-secondary">Bewerken</a>
+                            <form action="/users/<%= user.id %>/deactivate" method="POST" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt deactiveren?');">
+                                <input type="hidden" name="action" value="deactivate">
+                                <button type="submit" class="btn btn-sm btn-warning">Deactiveren</button>
+                            </form>                                                     
                         </td>
                     </tr>
                 <% }); %>

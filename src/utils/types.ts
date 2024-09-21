@@ -46,6 +46,52 @@ export interface SessionUser {
     email: string;
 }
 
+// Definieer de interface voor de "attributes" van een entiteit
+export interface EntityAttributes {
+    editable: boolean;
+    id: string;
+    device_trackers?: string[];
+    latitude?: number;
+    longitude?: number;
+    gps_accuracy?: number;
+    source?: string;
+    user_id?: string;
+    entity_picture?: string;
+    friendly_name: string;
+    apple_carplay_connected?: boolean;
+    auto_update?: boolean;
+    installed_version?: string;
+    in_progress?: boolean;
+    latest_version?: string;
+    release_summary?: string | null;
+    release_url?: string | null;
+    skipped_version?: string | null;
+    title?: string;
+    supported_features?: number;
+    state_class?: string;
+    unit_of_measurement?: string;
+    device_class?: string;
+}
+
+// Definieer de interface voor een entiteit
+export interface Entity {
+    entity_id: string;
+    state: string;
+    attributes: EntityAttributes;
+    last_changed: string;
+    last_reported?: string;
+    last_updated: string;
+    context: {
+        id: string;
+        parent_id: string | null;
+        user_id: string | null;
+    };
+}
+
+// Interface voor een API-response van meerdere entiteiten
+export type EntityResponse = Entity[];
+
+
 
 declare module 'express-session' {
     interface SessionData {

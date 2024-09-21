@@ -9,13 +9,13 @@ export class InstallationUserModel extends BaseModel {
 
     public async getUserById(id: number): Promise<InstallationUser | undefined> {
         const db = await this.db;
-        return db.get<InstallationUser>('SELECT * FROM installation_users WHERE id = ?', [id]);
+        return db.get<InstallationUser>(`SELECT * FROM installation_users WHERE id = $1 AND active = true`, [id]);
     }
 
     public async getUsersByInstallationId(installationId: number): Promise<InstallationUser[]> {
         const db = await this.db;
         return db.all<InstallationUser[]>(
-            'SELECT * FROM installation_users WHERE installation_id = ?',
+            `SELECT * FROM installation_users WHERE installation_id = $1 AND active = true`,
             [installationId]
         );
     }
@@ -31,6 +31,13 @@ export class InstallationUserModel extends BaseModel {
         // Retourneer het ID van de nieuw aangemaakte gebruiker
         return result.lastID as number;
     }
+
+    public async deactivateUser(userId: number): Promise<void> {
+        const db = await this.db;
+        await db.run('UPDATE installation_users SET active = false WHERE id = $1', [userId]);
+    }
+    
+        
     
 
     public async updateUser(id: number, user: Partial<InstallationUser>): Promise<void> {

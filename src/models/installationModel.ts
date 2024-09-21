@@ -1,4 +1,4 @@
-import { Installation } from '../utils/types';
+import { Installation } from '../utils';
 import { BaseModel } from './baseModel';
 
 export class InstallationModel extends BaseModel {

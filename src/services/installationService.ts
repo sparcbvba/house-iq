@@ -51,7 +51,7 @@ export class InstallationService {
     public async refreshInstallation(installation: Installation): Promise<void> {
         try {
             // Voer de healthcheck en update check uit
-            await performHealthCheck(installation, this.installationModel);
+            performHealthCheck(installation, this.installationModel);
         } catch (error) {
             logger.error(`Fout bij het handmatig vernieuwen van installatie ID ${installation.id}:`, error);
             throw error;

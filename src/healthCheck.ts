@@ -1,14 +1,8 @@
-// src/healthcheck.ts
-
-import { InstallationModel } from './models/installationModel';
-import { Installation } from './utils/types';
 import * as http from 'http';
 import * as https from 'https';
-import { URL } from 'url';
-import logger  from './utils/logger';
-import { InstallationUserModel } from './models/installationUserModel';
-import fetch from 'node-fetch'; // Zorg ervoor dat je node-fetch installeert
-import { decrypt } from './utils/encryption';
+import { InstallationModel, HealthCheckModel, InstallationUserModel } from './models';
+import { logger, Installation, decrypt } from './utils';
+import fetch from 'node-fetch'; 
 
 export function startHealthCheck() {
     setInterval(async () => {
@@ -26,41 +20,42 @@ export function startHealthCheck() {
 }
 
 export async function performHealthCheck(installation: Installation, installationModel: InstallationModel): Promise<void> {
-    const installationUrl = installation.url;
-    let urlObj: URL;
-
-    try {
-        urlObj = new URL(installationUrl);
-    } catch (error) {
-        logger.error('Ongeldige URL in installatie:', installationUrl, error);
-        await installationModel.updateInstallationStatus(installation.id, 'offline');
-        return;
-    }
-
-    const protocol = urlObj.protocol;
-
-    const requestModule = protocol === 'https:' ? https : http;
+    const url = installation.url;
+    const requestModule = url.startsWith('https') ? https : http;
     let callbackCalled = false;
 
+    const startTime = Date.now(); // Starttijd voor de duur van de healthcheck
+
     return new Promise((resolve, reject) => {
-        const req = requestModule.get(installationUrl, (resp) => {
+
+        const req = requestModule.get(url, (resp) => {
             if (callbackCalled) return;
             callbackCalled = true;
 
-            installationModel.updateInstallationStatus(installation.id, 'online').catch((error) => {
-                logger.error('Fout bij updaten van installatie status:', error);
-            });
+            const duration = Date.now() - startTime; // Duur berekenen
+            const status = 'online';
+
+            // Sla de healthcheck data op
+            const healthCheckModel = new HealthCheckModel();
+            healthCheckModel.saveHealthCheckData(installation.id, status, duration);
+
+            logger.info(`Installatie ${installation.id} is online. Healthcheck duur: ${duration}ms`);
 
             // Voer de update check uit
             checkForUpdates(installation).then(resolve).catch(reject);
-        }).on('error', (err: any) => {
+
+        }).on('error', (err) => {
             if (callbackCalled) return;
             callbackCalled = true;
 
-            installationModel.updateInstallationStatus(installation.id, 'offline').catch((error) => {
-                logger.error('Fout bij updaten van installatie status:', error);
-            });
+            const duration = Date.now() - startTime;
+            const status = 'offline';
 
+            // Sla de healthcheck data op
+            const healthCheckModel = new HealthCheckModel();
+            healthCheckModel.saveHealthCheckData(installation.id, status, duration);
+
+            logger.error(`Installatie ${installation.id} is offline. Healthcheck duur: ${duration}ms`);
             resolve(); // We lossen op zelfs bij een fout
         });
 
@@ -69,10 +64,14 @@ export async function performHealthCheck(installation: Installation, installatio
             callbackCalled = true;
 
             req.destroy();
+            const duration = Date.now() - startTime;
+            const status = 'offline';
 
-            installationModel.updateInstallationStatus(installation.id, 'offline').catch((error) => {
-                logger.error('Fout bij updaten van installatie status:', error);
-            });
+            // Sla de healthcheck data op
+            const healthCheckModel = new HealthCheckModel();
+            healthCheckModel.saveHealthCheckData(installation.id, status, duration);
+
+            logger.error(`Installatie ${installation.id} is offline (timeout). Healthcheck duur: ${duration}ms`);
 
             resolve(); // We lossen op bij een timeout
         });
@@ -134,4 +133,3 @@ async function checkForUpdates(installation: Installation): Promise<void> {
         await installationModel.resetInstallationVersions(installation.id);
     }
 }
-

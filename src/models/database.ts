@@ -52,12 +52,44 @@ async function initializeDatabase(db: Database) {
             latest_version TEXT DEFAULT 'onbekend'
         )`);
 
+        await db.exec(`CREATE TABLE IF NOT EXISTS healthcheck_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            installation_id INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            duration INTEGER NOT NULL, -- duur van de healthcheck in milliseconden
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, -- tijdstip van de healthcheck
+            FOREIGN KEY (installation_id) REFERENCES installations(id)
+        )`);
+
+        await db.exec(`CREATE TABLE IF NOT EXISTS entity_states (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_id TEXT NOT NULL,
+            state TEXT,
+            last_updated DATETIME,
+            installation_id INTEGER NOT NULL,
+            response_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (installation_id) REFERENCES installations(id)
+        )`);
+
+        await db.exec(`CREATE TABLE IF NOT EXISTS entity_state_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_id TEXT NOT NULL,
+            state TEXT,
+            last_updated DATETIME,
+            installation_id INTEGER NOT NULL,
+            response_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (installation_id) REFERENCES installations(id)
+        )`);
+        
+    
+
         // Nieuwe tabel voor applicatiegebruikers
         await db.exec(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             email TEXT UNIQUE,
-            password TEXT
+            password TEXT,
+            active BOOLEAN DEFAULT true
         )`);
 
         // Tabel voor gebruikers die bij een installatie horen

@@ -12,26 +12,16 @@ async function migrateDatabase() {
         driver: sqlite3.Database,
     });
 
-    // Voeg het 'preferred' veld toe aan de 'installation_users' tabel
-    await db.exec(`ALTER TABLE installation_users ADD COLUMN preferred INTEGER DEFAULT 0`);
+    // Verwijder de status- en timestampkolommen uit installations
+    // await db.run(`ALTER TABLE installations DROP COLUMN status`);
+    // await db.run(`ALTER TABLE installations DROP COLUMN last_check`);
 
-    // Haal alle installaties op
-    const installations = await db.all<{ id: number }[]>('SELECT id FROM installations');
+    // Maak de nieuwe healthcheck_data tabel aan
+    await db.run(`
+        UPDATE installations SET update_available=0, installed_version='', latest_version='';
+    `);
 
-    for (const installation of installations) {
-        // Haal de eerste gebruiker op voor elke installatie
-        const user = await db.get<{ id: number }>(
-            'SELECT id FROM installation_users WHERE installation_id = ? LIMIT 1',
-            [installation.id]
-        );
-
-        if (user) {
-            // Markeer de eerste gebruiker als voorkeursgebruiker
-            await db.run('UPDATE installation_users SET preferred = 1 WHERE id = ?', [user.id]);
-        }
-    }
-
-    console.log('Database migratie voltooid: preferred veld toegevoegd en eerste gebruikers gemarkeerd als voorkeursgebruiker.');
+    console.log('Migratie succesvol voltooid');
 }
 
 migrateDatabase().catch((err) => {

@@ -23,6 +23,7 @@
                     <th>Naam</th>
                     <th>URL</th>
                     <th>Status</th>
+                    <th>Duration</th>
                     <th>Versie</th>
                     <th>Update Beschikbaar</th>
                     <th>Acties</th>
@@ -33,15 +34,8 @@
                     <tr>
                         <td><%= installation.name %></td>
                         <td><%= installation.url %></td>
-                        <td>
-                            <% if (installation.status === 'online') { %>
-                                <span class="text-success">&#9679; Online</span>
-                            <% } else if (installation.status === 'offline') { %>
-                                <span class="text-danger">&#9679; Offline</span>
-                            <% } else { %>
-                                <span class="text-secondary">&#9679; Onbekend</span>
-                            <% } %>
-                        </td>
+                        <td><%= installation.lastHealthCheck ? installation.lastHealthCheck.status : 'Geen gegevens' %></td>
+                        <td><%= installation.lastHealthCheck ? installation.lastHealthCheck.duration + 'ms' : 'N/A' %></td>
                         <td>
                             <% if (installation.installed_version !== 'onbekend') { %>
                                 <span class="badge badge-success"><%= installation.installed_version %></span>

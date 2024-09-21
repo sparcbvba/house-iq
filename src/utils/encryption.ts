@@ -1,5 +1,3 @@
-// src/utils/encryption.ts
-
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
@@ -34,4 +32,3 @@ export function decrypt(encryptedText: string): string {
     decrypted += decipher.final('utf8');
     return decrypted;
 }
-

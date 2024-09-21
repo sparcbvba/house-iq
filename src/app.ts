@@ -11,14 +11,27 @@ import installationRoutes from './routes/installationRoutes';
 import userRoutes from './routes/userRoutes';
 import logger from './utils/logger';
 import { startHealthCheck } from './healthCheck';
+import methodOverride from 'method-override';
 
 dotenv.config();
 
 const app = express();
 
-// Middleware
+// Middleware voor body-parser (komt vóór method-override)
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Gebruik method-override om andere HTTP-methoden zoals DELETE te ondersteunen
+app.use(methodOverride('_method'));
+
+// Logging om te zien welke HTTP-methoden en URL's worden gebruikt
+app.use((req, res, next) => {
+    logger.info(`Methode: ${req.method}, URL: ${req.originalUrl}`);
+    next();
+});
+
 app.use(bodyParser.json());
+
+// Session middleware
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your_session_secret',
     resave: false,
