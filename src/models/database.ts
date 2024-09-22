@@ -46,10 +46,11 @@ async function initializeDatabase(db: Database) {
             postal_code TEXT,
             city TEXT,
             country TEXT,
-            status TEXT DEFAULT 'unknown',
             update_available INTEGER DEFAULT 0,
             installed_version TEXT DEFAULT 'onbekend',
-            latest_version TEXT DEFAULT 'onbekend'
+            latest_version TEXT DEFAULT 'onbekend',
+            last_entity_fetch DATETIME,
+            active_update_sensors INTEGER DEFAULT 0
         )`);
 
         await db.exec(`CREATE TABLE IF NOT EXISTS healthcheck_data (
@@ -68,8 +69,10 @@ async function initializeDatabase(db: Database) {
             last_updated DATETIME,
             installation_id INTEGER NOT NULL,
             response_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (installation_id) REFERENCES installations(id)
-        )`);
+            created_at DATETIME,
+            updated_at DATETIME,
+            UNIQUE(entity_id, installation_id)  -- Voeg de UNIQUE constraint toe
+        );`);
 
         await db.exec(`CREATE TABLE IF NOT EXISTS entity_state_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -79,9 +82,10 @@ async function initializeDatabase(db: Database) {
             installation_id INTEGER NOT NULL,
             response_time DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (installation_id) REFERENCES installations(id)
+            UNIQUE(entity_id, installation_id)  -- Voeg de UNIQUE constraint toe
         )`);
-        
-    
+
+
 
         // Nieuwe tabel voor applicatiegebruikers
         await db.exec(`CREATE TABLE IF NOT EXISTS users (

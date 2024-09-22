@@ -1,6 +1,5 @@
-import { InstallationUserModel } from '../models/installationUserModel';
-import { InstallationUser } from '../utils/types';
-import { hashPassword, encrypt } from '../utils/encryption';
+import { InstallationUserModel } from '../models';
+import { hashPassword, decrypt, encrypt, logger, InstallationUser } from '../utils';
 
 export class UserService {
     private installationUserModel: InstallationUserModel;
@@ -78,6 +77,26 @@ export class UserService {
         const user = await this.installationUserModel.getUserById(userId);
         if (user && user.preferred === 1) {
             await this.installationUserModel.updateUser(userId, { preferred: 0 });
+        }
+    }
+
+    // Functie om de voorkeursgebruiker met longlivingtoken op te halen
+    public async getPreferredUserWithToken(installationId: number): Promise<{ token: string } | null> {
+        try {
+            // Haal de voorkeursgebruiker op met een longlivingtoken
+            const user = await this.installationUserModel.getPreferredUserByInstallationId(installationId);
+
+            if (!user) {
+                logger.warn(`Geen voorkeursgebruiker met longlivingtoken gevonden voor installatie ID ${installationId}`);
+                return null;
+            }
+
+            // De longlivingtoken ontsleutelen
+            const token = decrypt(user.longlivingtoken);
+            return { token };
+        } catch (error) {
+            logger.error(`Fout bij het ophalen van de voorkeursgebruiker voor installatie ID ${installationId}:`, error);
+            return null;
         }
     }
 }

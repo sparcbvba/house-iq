@@ -10,10 +10,10 @@ export interface Installation {
     postal_code: string;
     city: string;
     country: string;
-    status: string;
     update_available: number; // 0 of 1
     installed_version: string;
     latest_version: string;
+    last_entity_fetch: string;
 }
 
 

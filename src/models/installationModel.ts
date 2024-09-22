@@ -10,7 +10,7 @@ export class InstallationModel extends BaseModel {
     public async getInstallationById(id: number): Promise<Installation | undefined> {
         const db = await this.db;
         return db.get<Installation>('SELECT * FROM installations WHERE id = ?', [id]);
-    }    
+    }
 
     public async getAllInstallations(): Promise<Installation[]> {
         const db = await this.db;
@@ -61,6 +61,24 @@ export class InstallationModel extends BaseModel {
         await db.run(
             `UPDATE installations SET installed_version = 'onbekend', latest_version = 'onbekend' WHERE id = ?`,
             [id]
+        );
+    }
+
+    // Update de tijd van de laatste entiteitenophaling
+    public async updateLastEntityFetch(installationId: number, lastEntityFetch: string): Promise<void> {
+        const db = await this.db;
+        await db.run(
+            `UPDATE installations SET last_entity_fetch = ? WHERE id = ?`,
+            [lastEntityFetch, installationId]
+        );
+    }
+
+    // Functie om het aantal actieve update sensoren bij te werken
+    public async updateActiveUpdateSensors(installationId: number, activeUpdateCount: number): Promise<void> {
+        const db = await this.db;
+        await db.run(
+            `UPDATE installations SET active_update_sensors = ? WHERE id = ?`,
+            [activeUpdateCount, installationId]
         );
     }
 }

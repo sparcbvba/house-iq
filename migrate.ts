@@ -17,9 +17,7 @@ async function migrateDatabase() {
     // await db.run(`ALTER TABLE installations DROP COLUMN last_check`);
 
     // Maak de nieuwe healthcheck_data tabel aan
-    await db.run(`
-        UPDATE installations SET update_available=0, installed_version='', latest_version='';
-    `);
+    await db.run(`ALTER TABLE installations ADD COLUMN active_update_sensors INTEGER DEFAULT 0;`);
 
     console.log('Migratie succesvol voltooid');
 }

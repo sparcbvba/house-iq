@@ -1,8 +1,10 @@
 import * as http from 'http';
 import * as https from 'https';
-import { InstallationModel, HealthCheckModel, InstallationUserModel } from './models';
-import { logger, Installation, decrypt } from './utils';
 import fetch from 'node-fetch'; 
+
+import { InstallationModel, HealthCheckModel } from './models';
+import { logger, Installation } from './utils';
+import { UserService } from './services';
 
 export function startHealthCheck() {
     setInterval(async () => {
@@ -78,25 +80,21 @@ export async function performHealthCheck(installation: Installation, installatio
     });
 }
 
+// Functie om updates te controleren
 async function checkForUpdates(installation: Installation): Promise<void> {
-    const installationUserModel = new InstallationUserModel();
+    const userService = new UserService();
     const installationModel = new InstallationModel();
 
     try {
-        // Haal de voorkeursgebruiker op met een longlivingtoken
-        const user = await installationUserModel.getPreferredUserByInstallationId(installation.id);
+        // Haal de voorkeursgebruiker en longlivingtoken op via de service
+        const userWithToken = await userService.getPreferredUserWithToken(installation.id);
 
-        if (!user) {
-            logger.warn(`Geen voorkeursgebruiker met longlivingtoken gevonden voor installatie ID ${installation.id}`);
-            // Reset de versies naar 'onbekend'
+        if (!userWithToken) {
             await installationModel.resetInstallationVersions(installation.id);
             return;
         }
 
-        // De longlivingtoken ontsleutelen
-        const token = decrypt(user.longlivingtoken);
-
-        // Rest van de code blijft hetzelfde
+        const token = userWithToken.token;
         const apiUrl = `${installation.url}/api/states/update.home_assistant_core_update`;
 
         const response = await fetch(apiUrl, {
@@ -113,9 +111,7 @@ async function checkForUpdates(installation: Installation): Promise<void> {
         }
 
         const data = await response.json();
-
-        // Haal de benodigde gegevens uit de respons
-        const state = data.state; // 'on' of 'off'
+        const state = data.state;  // 'on' of 'off'
         const attributes = data.attributes;
         const installedVersion = attributes.installed_version || 'onbekend';
         const latestVersion = attributes.latest_version || 'onbekend';
@@ -128,7 +124,6 @@ async function checkForUpdates(installation: Installation): Promise<void> {
 
     } catch (error) {
         logger.error(`Fout bij het controleren op updates voor installatie ID ${installation.id}:`, error);
-        // Reset de update_available en versies naar standaardwaarden
         await installationModel.updateInstallationUpdateStatus(installation.id, 0);
         await installationModel.resetInstallationVersions(installation.id);
     }

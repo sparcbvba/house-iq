@@ -26,6 +26,7 @@
                     <th>Duration</th>
                     <th>Versie</th>
                     <th>Update Beschikbaar</th>
+                    <th>Updates</th>
                     <th>Acties</th>
                 </tr>
             </thead>
@@ -57,17 +58,24 @@
                             <% } %>
                         </td>
 
+                        <td><%= installation.active_update_sensors %></td>
+
                         <td>
                             <a href="/installations/<%= installation.id %>/edit" class="btn btn-sm btn-secondary">Bewerken</a>
+                            
                             <!-- Refresh knop -->
                             <form action="/installations/<%= installation.id %>/refresh" method="POST" style="display:inline;">
                                 <button type="submit" class="btn btn-sm btn-info">Refresh</button>
                             </form>
-                            <!-- Openen knop -->
-                            <!-- ... bestaande code voor openen knop ... -->
-                            <!-- Nieuwe knop om gebruikers te beheren -->
+                        
+                            <!-- Nieuwe knop om entiteiten handmatig op te halen -->
+                            <form action="/installations/<%= installation.id %>/fetch-entities" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-success">Entiteiten Ophalen</button>
+                            </form>
+                            
                             <a href="/installations/<%= installation.id %>/users" class="btn btn-sm btn-warning">Gebruikers</a>
                         </td>
+                        
 
                     </tr>
                 <% }); %>

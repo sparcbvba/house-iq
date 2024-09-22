@@ -8,7 +8,7 @@
     "npm": ">=6.x"
   },
   "scripts": {
-    "start": "concurrently \"nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts\" \"ts-node src/worker/healthWorker.ts\"",
+    "start": "concurrently \"nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts\" \"ts-node src/workers/healthWorker.ts\" \"ts-node src/workers/entityWorker.ts\" \"ts-node src/workers/updateSensorWorker.ts\"",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
     "migrate": "ts-node migrate.ts",
