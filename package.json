@@ -8,19 +8,26 @@
     "npm": ">=6.x"
   },
   "scripts": {
-    "start": "concurrently \"nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts\" \"ts-node src/workers/healthWorker.ts\" \"ts-node src/workers/entityWorker.ts\" \"ts-node src/workers/updateSensorWorker.ts\"",
+    "start": "concurrently \"npx tailwindcss -i ./src/views/css/input.css -o ./public/css/tailwind.css --watch\" \"nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts\"",
+    "workers": "\"ts-node src/workers/healthWorker.ts\" \"ts-node src/workers/entityWorker.ts\" \"ts-node src/workers/updateSensorWorker.ts\"",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
     "migrate": "ts-node migrate.ts",
-    "postinstall": "npm run build"
+    "drop": "ts-node drop.ts",
+    "populate": "ts-node populate_db.ts",
+    "postinstall": "npm run build",
+    "css": "npx tailwindcss -i ./src/views/css/input.css -o ./public/css/tailwind.css --watch",
+    "create-users": "ts-node ./src/scripts/createUsers.ts"
   },
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.35.0",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.0",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
     "method-override": "^3.0.0",
     "node-fetch": "^2.7.0",
@@ -31,11 +38,13 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",
     "@types/body-parser": "^1.19.5",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",
+    "@types/express-ejs-layouts": "^2.5.4",
     "@types/express-session": "^1.18.0",
     "@types/method-override": "^0.0.35",
     "@types/node": "^18.19.50",
@@ -44,6 +53,7 @@
     "@types/winston": "^2.4.4",
     "concurrently": "^9.0.1",
     "nodemon": "^3.0.1",
+    "tailwindcss": "^3.4.13",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   }

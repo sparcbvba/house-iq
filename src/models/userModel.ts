@@ -8,22 +8,39 @@ export class UserModel extends BaseModel {
         super();
     }
 
-    public async getUserByUsername(username: string): Promise<AppUser | undefined> {
+    public async getAllUsers(): Promise<AppUser[] | undefined> {
         const db = await this.db;
-        return db.get<AppUser>('SELECT * FROM users WHERE username = ?', [username]);
+        return db.all<AppUser[]>('SELECT * FROM User');
     }
 
     public async getUserByEmail(email: string): Promise<AppUser | undefined> {
         const db = await this.db;
-        return db.get<AppUser>('SELECT * FROM users WHERE email = ?', [email]);
+        return db.get<AppUser>('SELECT * FROM User WHERE email = ?', [email]);
+    }
+
+    public async updateUserLastLogin(userId: number): Promise<void> {
+        const db = await this.db;
+        const query = `UPDATE User SET last_login = CURRENT_TIMESTAMP WHERE user_id = ?`;
+        await db.run(query, [userId]);
+    }
+
+
+    public async getUserDetailById(id: number): Promise<AppUser | undefined> {
+        const db = await this.db;
+        return db.get<AppUser>('SELECT * FROM User WHERE user_id = ?', [id]);
     }
 
     public async createUser(user: Partial<AppUser>): Promise<void> {
         const db = await this.db;
-        const { username, email, password } = user;
+        const { email, password_hash, first_name, last_name, role } = user;
         await db.run(
-            `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
-            [username, email, password]
+            `INSERT INTO User (email, password_hash, first_name, last_name, role, is_active) VALUES (?, ?, ?, ?, ?, ?)`,
+            [email, password_hash, first_name, last_name, role, true]
         );
+    }
+
+    public async removeAllUsers(): Promise<any> {
+        const db = await this.db;
+        return db.run('DELETE FROM User');
     }
 }

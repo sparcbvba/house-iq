@@ -1,6 +1,12 @@
 /* Module-augmentatie voor express-session */
 import 'express-session';
 
+export interface MenuItem {
+    name: string;
+    path: string;
+    permissions: string[];
+}
+
 export interface Installation {
     id: number;
     name: string;
@@ -21,11 +27,19 @@ export interface Installation {
 
 // Type voor applicatiegebruikers
 export interface AppUser {
-    id: number;
-    username: string;
+    user_id: number;
+    first_name: string;
+    last_name: string
     email: string;
-    password: string;
+    password_hash: string;
+    role: string;
+    is_active: boolean;
+    created_at: Date;
+    updated_at: Date;
+    last_login: Date;
+    last_login_locale: string;
 }
+
 
 // Type voor installatiegebruikers
 export interface InstallationUser {
@@ -38,12 +52,24 @@ export interface InstallationUser {
     preferred: number; // 0 of 1
 }
 
+export interface Home {
+    house_id: number;
+    address: string;
+    owner_id: number;
+    first_name: string;
+    last_name: string
+}
+
 
 // Type voor de gebruiker in de sessie
 export interface SessionUser {
-    id: number;
-    username: string;
+    user_id: number;
+    first_name: string;
+    last_name: string
     email: string;
+    password_hash: string;
+    role: string;
+    is_active: boolean
 }
 
 // Definieer de interface voor de "attributes" van een entiteit

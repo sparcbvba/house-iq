@@ -1,0 +1,33 @@
+{
+  "roles": {
+    "admin": {
+      "permissions": [
+        "*"
+      ],
+      "view": "dashboard_home_owner"
+    },
+    "home_viewer": {
+      "permissions": [
+        "view_homes",
+        "view_installations"
+      ],
+      "view": "dashboard_home_viewer"
+    },
+    "home_owner": {
+      "permissions": [
+        "view_homes",
+        "view_installations",
+        "manage_users"
+      ],
+      "view": "dashboard_home_owner"
+    },
+    "reporter": {
+      "permissions": [
+        "view_homes",
+        "view_installations",
+        "manage_reports"
+      ],
+      "view": "dashboard_reporter"
+    }
+  }
+}

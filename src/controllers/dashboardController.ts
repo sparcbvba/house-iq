@@ -1,34 +1,41 @@
-import { Request, Response } from 'express';
-import { InstallationService } from '../services';
-import { HealthCheckModel } from '../models'; // Voeg de healthcheck import toe
-import { logger } from '../utils'
+import { NextFunction, Request, Response } from 'express';
+import { PermissionService } from '../services/permissionService';
+import { HouseService } from '../services';
 
 export class DashboardController {
-    private installationService: InstallationService;
-    private healthCheckModel: HealthCheckModel;
+
+    private homeService: HouseService;
 
     constructor() {
-        this.installationService = new InstallationService();
-        this.healthCheckModel = new HealthCheckModel();
+        this.homeService = new HouseService();
     }
 
-    public showDashboard = async (req: Request, res: Response) => {
-        try {
-            const installations = await this.installationService.getAllInstallations();
-            const installationsWithHealthCheck = [];
+    public showDashboard = async (req: Request, res: Response, next: NextFunction) => {
+        const userRole = req.session.user?.role;
+        const userId = req.session.user?.user_id;
 
-            for (const installation of installations) {
-                const lastHealthCheck = await this.healthCheckModel.getLastHealthCheck(installation.id);
-                installationsWithHealthCheck.push({
-                    ...installation,
-                    lastHealthCheck,
-                });
-            }
+        const options = { data: undefined };
 
-            res.render('dashboard', { installations: installationsWithHealthCheck });
-        } catch (error) {
-            logger.error('Fout bij het ophalen van installaties en health checks:', error);
-            res.status(500).send('Er is een fout opgetreden bij het ophalen van de installaties.');
+        const view = PermissionService.getViewForRole(userRole)
+
+        if (!view) return next('no view found');
+
+        if (userRole === 'admin') {
+            // Admin: Haal alle huizen en installaties op
+            const homes = await this.homeService.getAllHomes();
+            options.data = homes;
+
+
+        } else if (userRole === 'home_owner') {
+
+
+        } else if (userRole === 'home_viewer') {
+
+        } else {
+            // Onbekende rol of geen toegang
+            return res.status(403).send('Toegang geweigerd');
         }
+
+        res.render(view, options);
     }
 }

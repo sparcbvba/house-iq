@@ -1,15 +1,5 @@
-<!-- src/views/user_edit.ejs -->
+<% title = "Edit user" %>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Gebruiker Bewerken</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-
-<body>
     <div class="container">
         <h2 class="mt-4">Gebruiker Bewerken</h2>
         <form action="/users/<%= user.id %>" method="POST">
@@ -41,10 +31,3 @@
         </form>
         <a href="/installations/<%= user.installation_id %>/users" class="btn btn-secondary mt-3">Terug naar Gebruikerslijst</a>
     </div>
-
-    <!-- Bootstrap JS en afhankelijkheden -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</body>
-</html>

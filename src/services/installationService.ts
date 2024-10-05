@@ -1,4 +1,3 @@
-import { performHealthCheck } from '../healthCheck';
 import { InstallationModel } from '../models/installationModel';
 import { Installation } from '../utils/types';
 import logger from '../utils/logger';
@@ -9,10 +8,10 @@ export class InstallationService {
     constructor() {
         this.installationModel = new InstallationModel();
     }
-    
+
     public getInstallationLink(installation: Installation): string {
         return installation.url;
-    }    
+    }
 
     public async getAllInstallations(): Promise<Installation[]> {
         return this.installationModel.getAllInstallations();
@@ -46,16 +45,6 @@ export class InstallationService {
             country: data.country,
         };
         await this.installationModel.updateInstallation(id, installationData);
-    }
-
-    public async refreshInstallation(installation: Installation): Promise<void> {
-        try {
-            // Voer de healthcheck en update check uit
-            performHealthCheck(installation, this.installationModel);
-        } catch (error) {
-            logger.error(`Fout bij het handmatig vernieuwen van installatie ID ${installation.id}:`, error);
-            throw error;
-        }
     }
 
 }

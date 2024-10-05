@@ -1,8 +1,8 @@
 // src/controllers/authController.ts
 
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { SessionUser } from '../utils/types';
+import { Views } from '../constants/viewConstants';
 import logger from '../utils/logger';
 
 export class AuthController {
@@ -13,37 +13,41 @@ export class AuthController {
     }
 
     public showLoginForm = (req: Request, res: Response) => {
-        res.render('login');
+        res.render(Views.AUTH.LOGIN, {
+            title: "Login"
+        });
     };
 
-    public login = async (req: Request, res: Response) => {
+    public login = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { username, password } = req.body;
-            const user = await this.authService.authenticate(username, password);
+            const { email, password } = req.body;
+            const user = await this.authService.authenticate(email, password);
             if (user) {
                 req.session.user = user;
                 res.redirect('/dashboard');
             } else {
-                res.render('login', { error: 'Ongeldige gebruikersnaam of wachtwoord' });
+                res.render(Views.AUTH.LOGIN, { error: 'Ongeldige gebruikersnaam of wachtwoord' });
             }
         } catch (error) {
             logger.error('Fout bij inloggen:', error);
-            res.status(500).send('Er is een fout opgetreden bij het inloggen.');
+            next('Er is een fout opgetreden bij het inloggen.');
         }
     };
 
     public showRegisterForm = (req: Request, res: Response) => {
-        res.render('register');
+        res.render(Views.AUTH.REGISTER, {
+            title: "Registreer"
+        });
     };
 
     public register = async (req: Request, res: Response) => {
         try {
-            const { username, email, password } = req.body;
-            await this.authService.register(username, email, password);
+            const { email, password, first_name, last_name } = req.body;
+            await this.authService.register(email, password, first_name, last_name);
             res.redirect('/login');
         } catch (error) {
             logger.error('Fout bij registreren:', error);
-            res.render('register', { error: error });
+            res.render(Views.AUTH.REGISTER, { error: error });
         }
     };
 

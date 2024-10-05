@@ -1,0 +1,16 @@
+{
+    "en": {
+        "loginTitle": "Login",
+            "emailLabel": "Email Address",
+                "passwordLabel": "Password",
+                    "loginButton": "Login",
+                        "registerLinkText": "Don't have an account? Register"
+    },
+    "nl": {
+        "loginTitle": "Inloggen",
+            "emailLabel": "E-mailadres",
+                "passwordLabel": "Wachtwoord",
+                    "loginButton": "Inloggen",
+                        "registerLinkText": "Heb je geen account? Registreer"
+    }
+}

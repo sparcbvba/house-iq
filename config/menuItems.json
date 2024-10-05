@@ -1,0 +1,22 @@
+[
+    { 
+        "name": "Dashboard", 
+        "path": "/dashboard",
+        "permissions": ["view_homes", "view_reports"]
+    },
+    { 
+        "name": "Users", 
+        "path": "/users",
+        "permissions": ["manage_users"] 
+    },
+    { 
+        "name": "Houses", 
+        "path": "/houses",
+        "permissions": ["view_homes"]
+    },
+    { 
+        "name": "Reports", 
+        "path": "/reports",
+        "permissions": ["view_reports"]
+     }
+]
