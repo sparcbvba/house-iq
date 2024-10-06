@@ -4,7 +4,7 @@
       "permissions": [
         "*"
       ],
-      "view": "dashboard_home_owner"
+      "view": "dashboard_admin"
     },
     "home_viewer": {
       "permissions": [

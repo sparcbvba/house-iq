@@ -3,6 +3,7 @@ import { UserService, PermissionService } from '../services';
 import { Views } from '../constants/viewConstants';
 import logger from '../utils/logger';
 import { AppUser } from '@/utils';
+import { subtle } from 'crypto';
 
 export class UserController {
     private userService: UserService;
@@ -39,7 +40,7 @@ export class UserController {
 
             user.last_login_locale = user.last_login ? new Date(user.last_login).toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }) : 'never';
 
-            res.render(Views.USERS.DETAIL, { user: user });
+            res.render(Views.USERS.DETAIL, { user: user, subtitle: "Profile for " + user.first_name + ' ' + user.last_name });
         } catch (error) {
             logger.error('Fout bij het ophalen van gebruiker:', error);
             next('Er is een fout opgetreden bij het ophalen van de gebruiker.');

@@ -29,6 +29,7 @@
     "express": "^4.21.0",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
+    "flowbite": "^2.5.2",
     "method-override": "^3.0.0",
     "node-fetch": "^2.7.0",
     "pg": "^8.13.0",
