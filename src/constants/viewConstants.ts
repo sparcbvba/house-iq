@@ -20,6 +20,9 @@ export const Views = {
     AUTH: {
         LOGIN: "login",
         REGISTER: "register"
+    },
+    ONBOARDING: {
+        CREATE_USER: "step_create_user"
     }
 
 };

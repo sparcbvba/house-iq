@@ -33,11 +33,13 @@ export interface AppUser {
     email: string;
     password_hash: string;
     role: string;
+    gravatarUrl: string;
     is_active: boolean;
     created_at: Date;
     updated_at: Date;
     last_login: Date;
     last_login_locale: string;
+    is_online: boolean;
 }
 
 

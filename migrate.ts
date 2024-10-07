@@ -43,10 +43,12 @@ async function migrateDatabase() {
             email TEXT UNIQUE,
             password_hash TEXT,
             role TEXT,
+            gravatarUrl TEXT,
             is_active BOOLEAN DEFAULT TRUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP
+            last_login TIMESTAMP,   
+            is_online BOOLEAN DEFAULT FALSE
         );
 
         -- Tabel: User_House (tussenliggende tabel)

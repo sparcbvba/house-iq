@@ -13,6 +13,8 @@ try {
     rolesPermissions = {};
 }
 
+
+// TODO: transform to class. Keep it uniform Bart!!!
 export const PermissionService = {
     /**
      * Controleert of een rol een bepaalde permissie heeft

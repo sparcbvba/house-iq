@@ -15,4 +15,8 @@ export class UserService {
     public async getUserDetail(id: number): Promise<AppUser | undefined> {
         return await this.userModel.getUserDetailById(id);
     }
+
+    public async updateUserStatus(id: number, online: boolean): Promise<void> {
+        return await this.userModel.updateUserStatus(id, online);
+    }
 }

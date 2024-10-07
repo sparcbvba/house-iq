@@ -6,7 +6,7 @@ import expressLayouts from 'express-ejs-layouts';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import { authRoutes, adminRoutes, dashboardRoutes, installationRoutes, userRoutes, houseRoutes } from './routes';
+import { authRoutes, adminRoutes, dashboardRoutes, installationRoutes, userRoutes, houseRoutes, onboardingRoutes } from './routes';
 import logger from './utils/logger';
 import methodOverride from 'method-override';
 import { setUser, setLayout, setActiveMenu, notFoundMiddleware, errorHandler, setDefaultTitle, setMenu } from './middleware';
@@ -94,6 +94,7 @@ app.use('/', dashboardRoutes);
 app.use('/', installationRoutes);
 app.use('/', userRoutes);
 app.use('/', houseRoutes);
+app.use('/', onboardingRoutes);
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));

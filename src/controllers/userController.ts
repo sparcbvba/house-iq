@@ -61,6 +61,19 @@ export class UserController {
         res.render(Views.USERS.OVERVIEW, { title: "Users" });
     }
 
+    public updateUserStatus = async (req: Request, res: Response, next: NextFunction) => {
+        console.log('updating user status');
+        const { userId, isOnline } = req.body;
+        console.log('updating user status', userId, isOnline);
+        try {
+            this.userService.updateUserStatus(userId, isOnline);
+        } catch (error) {
+            logger.error('Fout bij het ophalen van gebruiker:', error);
+            next('Er is een fout opgetreden bij het ophalen van de gebruiker.');
+        }
+        res.status(200).send('User status updated successfully');
+    }
+
 }
 
 
