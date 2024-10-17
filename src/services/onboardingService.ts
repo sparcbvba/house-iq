@@ -5,6 +5,7 @@ import { HouseService, InstallationService } from "./";
 import { IInstallationService } from "./interfaces";
 
 export class OnboardingService {
+
     private onboardingModel: OnboardingModel = new OnboardingModel();
     private houseService: HouseService = new HouseService();
     private installationService: IInstallationService = new InstallationService();
@@ -24,8 +25,13 @@ export class OnboardingService {
         return onboarding.step;
     }
 
-    public async register(email: string, password: string, first_name: string, last_name: string, role?: string): Promise<number> {
-        return 1;
+    public async getCompletedProcesses() {
+        const completedProcesses = await this.onboardingModel.getAllByStatus(OnboardingStatus.COMPLETED);
+        return completedProcesses;
+    }
+    public async getOngoingProcesses() {
+        const ongoingProcesses = await this.onboardingModel.getAllByStatus(OnboardingStatus.IN_PROGRESS);
+        return ongoingProcesses;
     }
 
     /**

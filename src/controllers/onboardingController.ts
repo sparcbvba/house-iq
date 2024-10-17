@@ -14,6 +14,7 @@ export class OnboardingController {
         this.onboardingService = new OnboardingService();
         this.authService = new AuthService();
         this.createUser = this.createUser.bind(this);
+        this.getOnboardingOverview = this.getOnboardingOverview.bind(this);
 
         logger.info('OnboardingController initialized');
         // this.steps = [
@@ -27,6 +28,20 @@ export class OnboardingController {
 
     public async showStep(req: Request, res: Response, next: NextFunction) {
         res.render(Views.ONBOARDING.CREATE_USER, { title: "Create user" });
+    }
+
+    public async getOnboardingOverview(req: Request, res: Response): Promise<void> {
+        try {
+            const ongoingProcesses = await this.onboardingService.getOngoingProcesses();
+            const completedProcesses = await this.onboardingService.getCompletedProcesses();
+            res.render('private/onboarding/onboarding_overview', {
+                ongoingProcesses,
+                completedProcesses
+            });
+        } catch (error) {
+            console.error('Error fetching onboarding overview:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
     }
 
     // Controleer huidige stap van onboarding en toon juiste stap in de wizard
