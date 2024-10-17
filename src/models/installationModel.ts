@@ -1,10 +1,11 @@
-import { Installation } from '../utils';
+import { Installation, logger } from '../utils';
 import { BaseModel } from './baseModel';
 
 export class InstallationModel extends BaseModel {
 
     constructor() {
         super();
+        logger.info('InstallationModel initialized');
     }
 
     public async getInstallationById(id: number): Promise<Installation | undefined> {
@@ -17,13 +18,18 @@ export class InstallationModel extends BaseModel {
         return db.all<Installation[]>('SELECT * FROM installations');
     }
 
-    public async createInstallation(installation: Partial<Installation>): Promise<void> {
+    public async createInstallation(installation: Partial<Installation>): Promise<Installation | undefined> {
         const db = await this.db;
         const { name, url, street, number, postal_code, city, country } = installation;
-        await db.run(
+        const result = await db.run(
             `INSERT INTO installations (name, url, street, number, postal_code, city, country) VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [name, url, street, number, postal_code, city, country]
         );
+        const newInstallationId = result.lastID;
+        if (typeof newInstallationId === 'number') {
+            return this.getInstallationById(newInstallationId);
+        }
+        throw new Error('Failed to create installation: newInstallationId is undefined');
     }
 
     public async updateInstallation(id: number, installation: Partial<Installation>): Promise<void> {

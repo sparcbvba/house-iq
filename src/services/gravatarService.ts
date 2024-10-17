@@ -1,6 +1,12 @@
+import { logger } from '../utils';
 import * as crypto from 'crypto';
 
 export class GravatarService {
+
+    constructor() {
+        logger.info('gravatarService init');
+    }
+
     /**
      * Generates a Gravatar URL for a given email.
      * @param email - The email address to generate the Gravatar for.

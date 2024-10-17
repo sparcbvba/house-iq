@@ -1,10 +1,13 @@
 // src/models/installationUserModel.ts
 import { BaseModel } from './baseModel';
 import { InstallationUser } from '../utils/types';
+import { logger } from '../utils';
 
 export class InstallationUserModel extends BaseModel {
+
     constructor() {
         super();
+        logger.info('InstallationUserModel initialized');
     }
 
     public async getUserById(id: number): Promise<InstallationUser | undefined> {
@@ -27,7 +30,7 @@ export class InstallationUserModel extends BaseModel {
             VALUES (?, ?, ?, ?, ?)`,
             [user.installation_id, user.username, user.password, user.type, user.longlivingtoken]
         );
-    
+
         // Retourneer het ID van de nieuw aangemaakte gebruiker
         return result.lastID as number;
     }
@@ -36,9 +39,9 @@ export class InstallationUserModel extends BaseModel {
         const db = await this.db;
         await db.run('UPDATE installation_users SET active = false WHERE id = $1', [userId]);
     }
-    
-        
-    
+
+
+
 
     public async updateUser(id: number, user: Partial<InstallationUser>): Promise<void> {
         const db = await this.db;

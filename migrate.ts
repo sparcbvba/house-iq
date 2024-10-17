@@ -13,6 +13,21 @@ async function migrateDatabase() {
     // Start schema migration
     await db.exec(`
 
+        CREATE TABLE IF NOT EXISTS Onboarding (
+            onboarding_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,          -- Verwijzing naar de aangemaakte gebruiker
+            house_id INTEGER,         -- Verwijzing naar het huis (null totdat het is aangemaakt)
+            installation_id INTEGER,  -- Verwijzing naar de installatie (null totdat deze is toegevoegd)
+            step TEXT NOT NULL,       -- Huidige stap in het onboardingproces ('user_created', 'house_created', 'installation_added', 'installation_verified')
+            status TEXT NOT NULL,     -- Status van de stap ('pending', 'in_progress', 'completed')
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES User(user_id),
+            FOREIGN KEY (house_id) REFERENCES House(house_id),
+            FOREIGN KEY (installation_id) REFERENCES Installation(installation_id)
+        );
+
+
         -- Table: House
         CREATE TABLE IF NOT EXISTS House (
             house_id INTEGER PRIMARY KEY AUTOINCREMENT,

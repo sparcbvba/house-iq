@@ -1,4 +1,5 @@
 // src/models/userModel.ts
+import { logger } from '../utils';
 import { AppUser } from '../utils/types';
 import { BaseModel } from './baseModel';
 
@@ -6,6 +7,7 @@ export class UserModel extends BaseModel {
 
     constructor() {
         super();
+        logger.info('UserModel initialized');
     }
 
     public async getAllUsers(): Promise<AppUser[] | undefined> {
@@ -43,13 +45,16 @@ export class UserModel extends BaseModel {
         await db.run(query, [online, id]);
     }
 
-    public async createUser(user: Partial<AppUser>): Promise<void> {
+    public async createUser(user: Partial<AppUser>): Promise<number | undefined> {
         const db = await this.db;
         const { email, password_hash, first_name, last_name, role, gravatarUrl } = user;
-        await db.run(
+        const result = await db.run(
             `INSERT INTO User (email, password_hash, first_name, last_name, role, is_active, gravatarUrl) VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [email, password_hash, first_name, last_name, role, true, gravatarUrl]
         );
+
+        // Retourneer het ID van de nieuw aangemaakte gebruiker
+        return result.lastID;
     }
 
     public async removeAllUsers(): Promise<any> {

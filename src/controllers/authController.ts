@@ -51,10 +51,11 @@ export class AuthController {
         }
     };
 
-    public logout = (req: Request, res: Response) => {
+    public logout = (req: Request, res: Response, next: NextFunction) => {
         req.session.destroy((err) => {
             if (err) {
                 logger.error('Fout bij uitloggen:', err);
+                return next('Er is een fout opgetreden bij het uitloggen.');
             }
             res.redirect('/login');
         });

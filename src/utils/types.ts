@@ -1,4 +1,5 @@
 /* Module-augmentatie voor express-session */
+import { OnboardingStatus, OnboardingSteps } from '../constants';
 import 'express-session';
 
 export interface MenuItem {
@@ -22,14 +23,13 @@ export interface Installation {
     last_entity_fetch: string;
 }
 
-
 // src/utils/types.ts
 
 // Type voor applicatiegebruikers
 export interface AppUser {
     user_id: number;
     first_name: string;
-    last_name: string
+    last_name: string;
     email: string;
     password_hash: string;
     role: string;
@@ -42,6 +42,17 @@ export interface AppUser {
     is_online: boolean;
 }
 
+// Type voor onboarding
+export interface Onboarding {
+    onboarding_id: number;
+    user_id: number | null;
+    house_id: number | null;
+    installation_id: number | null;
+    step: OnboardingSteps;
+    status: OnboardingStatus;
+    created_at: Date;
+    updated_at: Date;
+}
 
 // Type voor installatiegebruikers
 export interface InstallationUser {
@@ -55,23 +66,23 @@ export interface InstallationUser {
 }
 
 export interface Home {
-    house_id: number;
+    house_id?: number;
+    name?: string;
+    main_user_id: number;
     address: string;
-    owner_id: number;
     first_name: string;
-    last_name: string
+    last_name: string;
 }
-
 
 // Type voor de gebruiker in de sessie
 export interface SessionUser {
     user_id: number;
     first_name: string;
-    last_name: string
+    last_name: string;
     email: string;
     password_hash: string;
     role: string;
-    is_active: boolean
+    is_active: boolean;
 }
 
 // Definieer de interface voor de "attributes" van een entiteit
@@ -118,8 +129,6 @@ export interface Entity {
 
 // Interface voor een API-response van meerdere entiteiten
 export type EntityResponse = Entity[];
-
-
 
 declare module 'express-session' {
     interface SessionData {

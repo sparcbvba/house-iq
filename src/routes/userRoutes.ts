@@ -11,8 +11,9 @@ router.get('/users/:userId', checkAuth, userController.getUserDetail);
 router.get('/users/:userId/edit', checkAuth, userController.showEditForm);
 
 router.post('/users/update-status', checkAuth, userController.updateUserStatus);
+router.post('/users/create', checkAuth, userController.createUser);
 router.post('/users/:userId', checkAuth, userController.updateUser);
-router.post('/users/:userId/deactivate', userController.deactivateUser);
+router.post('/users/:userId/deactivate', checkAuth, userController.deactivateUser);
 
 
 

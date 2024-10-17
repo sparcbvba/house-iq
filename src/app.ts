@@ -69,15 +69,6 @@ viewPaths.push(privateViewsPath);
 // Zet de views met de dynamisch verzamelde mappen
 app.set('views', viewPaths);
 
-// // Configuratie voor meerdere view directories
-// app.set('views', [
-//     path.join(__dirname, 'views'),
-//     path.join(__dirname, 'views/public'),
-//     path.join(__dirname, 'views/private'),
-//     path.join(__dirname, 'views/private/dashboards'),
-//     path.join(__dirname, 'views/private/houses'),
-//     path.join(__dirname, 'views/private/users')
-// ]);
 app.set('view engine', 'ejs');
 
 app.use(setUser);

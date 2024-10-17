@@ -1,10 +1,12 @@
 // src/models/EnergyModel.ts
+import { logger } from '@/utils';
 import { BaseModel } from './baseModel';
 
 export class EnergyModel extends BaseModel {
 
     constructor() {
         super();
+        logger.info('EnergyModel initialized');
     }
 
     // Haal energieverbruik op voor de gebruiker (home_owner)

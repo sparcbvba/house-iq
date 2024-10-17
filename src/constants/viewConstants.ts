@@ -22,7 +22,11 @@ export const Views = {
         REGISTER: "register"
     },
     ONBOARDING: {
-        CREATE_USER: "step_create_user"
+        CREATE_USER: "step_create_user",
+        HOUSE_CREATION: "step_house_creation",
+        INSTALLATION_ADDITION: "step_installation_addition",
+        INSTALLATION_VERIFICATION: "step_installation_verification",
+        COMPLETED: "step_completed",
     }
 
 };

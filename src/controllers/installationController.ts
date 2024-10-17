@@ -1,15 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 import { InstallationService } from '../services/installationService';
-const { InfluxDB } = require('@influxdata/influxdb-client');
 import logger from '../utils/logger';
+import { InfluxDBService } from '../services';
+import { IInstallationService } from '../services/interfaces';
 
+/**
+ * The InstallationController class handles HTTP requests related to installations.
+ * It interacts with the installation service to perform CRUD operations and render views.
+ * 
+ * @class
+ * @implements {IInstallationService}
+ */
 export class InstallationController {
-    private installationService: InstallationService;
+    private installationService: IInstallationService;
 
     constructor() {
         this.installationService = new InstallationService();
     }
 
+    /**
+     * Handles the request to show all installations.
+     * 
+     * This method retrieves all installations using the installation service and renders the 'dashboard' view with the installations data.
+     * If an error occurs during the retrieval process, it logs the error and passes an error message to the next middleware.
+     * 
+     * @param req - The request object.
+     * @param res - The response object.
+     * @param next - The next middleware function.
+     * 
+     * @returns A promise that resolves when the installations are successfully retrieved and the view is rendered.
+     */
     public showInstallations = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const installations = await this.installationService.getAllInstallations();
@@ -20,15 +40,22 @@ export class InstallationController {
         }
     };
 
+    /**
+     * Retrieves historical data from the InfluxDB and renders it on the 'history' view.
+     * 
+     * @param req - The HTTP request object.
+     * @param res - The HTTP response object.
+     * @param next - The next middleware function in the stack.
+     * 
+     * @remarks
+     * This method queries the InfluxDB for data from the past hour, filtering by specific measurements and fields.
+     * The results are grouped by entity_id and passed to the 'history' view for rendering.
+     * 
+     * @throws Will call the next middleware with an error message if the query fails.
+     */
     public getHistory = async (req: Request, res: Response, next: NextFunction) => {
-        const url = "https://eu-central-1-1.aws.cloud2.influxdata.com";
-        const token = "e1YfdfMVi3DTbvFxLRWiiuyzZM_G-fbGIdNWoOQjCdM2YhUsFmH8ihZ2la4qpuItcVtdBo-tlfrJBb40cZ18hA==";
-        const org = "c137f6ca19431652";
         const bucket = "testhomeiq";
         const measurement = "W";
-
-        const queryApi = new InfluxDB({ url: url, token: token }).getQueryApi(org);
-
         const fluxQuery = `from(bucket: "${bucket}")
   |> range(start: -1h)
   |> filter(fn: (r) => r._measurement == "${measurement}")
@@ -41,7 +68,7 @@ export class InstallationController {
             solaxmodbus_pv_power_total: []
         };
 
-        queryApi.queryRows(fluxQuery, {
+        InfluxDBService.queryRows(fluxQuery, {
             next(row: any, tableMeta: any) {
                 const o = tableMeta.toObject(row);
                 console.log('Record:', o);
@@ -62,10 +89,33 @@ export class InstallationController {
     }
 
 
+    /**
+     * Handles the request to show the installation form.
+     * Renders the 'installation_form' view.
+     *
+     * @param req - The request object.
+     * @param res - The response object.
+     */
     public showInstallationForm = (req: Request, res: Response) => {
         res.render('installation_form');
     };
 
+    /**
+     * Handles the creation of a new installation.
+     * 
+     * This method receives the installation data from the request body,
+     * attempts to create a new installation using the installation service,
+     * and redirects the user to the dashboard upon success.
+     * 
+     * If an error occurs during the creation process, it logs the error
+     * and passes a custom error message to the next middleware.
+     * 
+     * @param req - The request object containing the installation data.
+     * @param res - The response object used to redirect the user.
+     * @param next - The next middleware function in the stack.
+     * 
+     * @throws Will pass an error message to the next middleware if the creation fails.
+     */
     public createInstallation = async (req: Request, res: Response, next: NextFunction) => {
         try {
             await this.installationService.createInstallation(req.body);
@@ -76,9 +126,21 @@ export class InstallationController {
         }
     };
 
+    /**
+     * Handles the request to show the edit form for a specific installation.
+     * 
+     * @param req - The request object, containing the installation ID in the parameters.
+     * @param res - The response object, used to render the edit form or send an error status.
+     * @param next - The next middleware function in the stack, used for error handling.
+     * 
+     * @returns A promise that resolves to rendering the edit form with the installation data,
+     *          or sending a 404 status if the installation is not found.
+     * 
+     * @throws Will call the next middleware with an error message if an error occurs during the process.
+     */
     public showEditForm = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const installationId = parseInt(req.params.id);
+            const installationId = parseInt(req.params.id, 10);
             const installation = await this.installationService.getInstallationById(installationId);
             if (!installation) {
                 return res.status(404).send('Installatie niet gevonden.');
@@ -90,9 +152,18 @@ export class InstallationController {
         }
     };
 
+    /**
+     * Updates an existing installation with the provided data.
+     * 
+     * @param req - The request object containing the installation ID in the URL parameters and the update data in the body.
+     * @param res - The response object used to redirect the user after a successful update.
+     * @param next - The next middleware function in the stack, used to handle errors.
+     * 
+     * @throws Will call the next middleware with an error message if the update fails.
+     */
     public updateInstallation = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const installationId = parseInt(req.params.id);
+            const installationId = parseInt(req.params.id, 10);
             await this.installationService.updateInstallation(installationId, req.body);
             res.redirect('/dashboard');
         } catch (error) {

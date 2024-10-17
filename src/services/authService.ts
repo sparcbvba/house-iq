@@ -1,19 +1,18 @@
 // src/services/authService.ts
-import { UserModel, RoleModel } from '../models';
+import { UserModel } from '../models';
 import { AppUser, SessionUser } from '../utils/types';
 import { hashPassword, comparePassword } from '../utils/encryption';
 import { GravatarService } from './';
+import { logger } from '../utils';
 
 export class AuthService {
     private userModel: UserModel;
-    private roleModel: RoleModel;
     private gravatarService: GravatarService
 
     constructor() {
         this.gravatarService = new GravatarService();
-
         this.userModel = new UserModel();
-        this.roleModel = new RoleModel();
+        logger.info('authService init');
     }
 
     public async authenticate(email: string, password: string): Promise<SessionUser | null> {
@@ -43,7 +42,7 @@ export class AuthService {
         return null;
     }
 
-    public async register(email: string, password: string, first_name: string, last_name: string, role?: string): Promise<void> {
+    public async register(email: string, password: string, first_name: string, last_name: string, role?: string): Promise<number> {
         // Stap 1: Controleer of de gebruiker al bestaat
         const existingUser = await this.userModel.getUserByEmail(email);
         if (existingUser) {
@@ -72,7 +71,12 @@ export class AuthService {
         };
 
         // Stap 5: Sla de gebruiker op in de database
-        await this.userModel.createUser(userData);
+        const createdUser = await this.userModel.createUser(userData);
+        if (createdUser) {
+            return createdUser;
+        } else {
+            throw new Error('Failed to create user.');
+        }
     }
 
 }

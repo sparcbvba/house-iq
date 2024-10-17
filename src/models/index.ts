@@ -1,3 +1,5 @@
+import { EnergyModel } from './energyModel';
+export { OnboardingModel } from './onboardingModel';
 export { InstallationModel } from "./installationModel";
 export { InstallationUserModel } from "./installationUserModel";
 export { UserModel } from "./userModel";

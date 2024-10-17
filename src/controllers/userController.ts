@@ -3,13 +3,13 @@ import { UserService, PermissionService } from '../services';
 import { Views } from '../constants/viewConstants';
 import logger from '../utils/logger';
 import { AppUser } from '@/utils';
-import { subtle } from 'crypto';
 
 export class UserController {
     private userService: UserService;
 
     constructor() {
         this.userService = new UserService();
+        logger.info('UserController initialized');
     }
 
     // GETS
@@ -72,6 +72,16 @@ export class UserController {
             next('Er is een fout opgetreden bij het ophalen van de gebruiker.');
         }
         res.status(200).send('User status updated successfully');
+    }
+
+    public createUser = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const newUserId = await this.userService.createUser(req.body);
+            res.redirect(`/users/${newUserId}`);
+        } catch (error) {
+            logger.error('Fout bij het aanmaken van gebruiker:', error);
+            next('Er is een fout opgetreden bij het aanmaken van de gebruiker.');
+        }
     }
 
 }

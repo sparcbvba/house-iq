@@ -901,18 +901,18 @@
       }
 
       // Update status to online when the page is loaded
-      updateUserStatus(true);
+      //updateUserStatus(true);
 
       // Update status to offline when the user closes the page or logs out
       window.addEventListener('beforeunload', () => {
-        updateUserStatus(false);
+        //updateUserStatus(false);
       });
 
       // Optionally, add a logout button
       const logoutButton = document.getElementById('logoutButton');
       if (logoutButton) {
         logoutButton.addEventListener('click', () => {
-          updateUserStatus(false);
+          //updateUserStatus(false);
         });
       }
     });
