@@ -3,17 +3,18 @@
 
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl">Ongoing Processes</h2>
-        <button id="toggleCompleted" class="bg-blue-500 text-white px-4 py-2 rounded">Show Completed</button>
+        <div>
+            <button id="toggleCompleted" class="bg-blue-500 text-white px-4 py-2 rounded">Show Completed</button>
+            <a href="/onboarding/start" id="startNewOnboarding"
+                class="bg-green-500 text-white px-4 py-2 rounded ml-2">Start New Onboarding</a>
+        </div>
     </div>
 
     <div id="ongoingProcesses" class="space-y-4">
         <% ongoingProcesses.forEach(process=> { %>
             <div class="p-4 bg-white shadow rounded">
-                <h3 class="text-lg font-semibold">
-                    <%= process.title %>
-                </h3>
                 <p>
-                    <%= process.description %>
+                    <%= process %>
                 </p>
             </div>
             <% }) %>

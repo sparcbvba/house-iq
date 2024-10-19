@@ -50,8 +50,8 @@ export interface Onboarding {
     installation_id: number | null;
     step: OnboardingSteps;
     status: OnboardingStatus;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 // Type voor installatiegebruikers

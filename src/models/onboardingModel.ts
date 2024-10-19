@@ -1,16 +1,15 @@
-import { BaseModel } from './baseModel'; // Adjust the path as necessary
-import { Onboarding } from '../utils/types';
-import { logger } from '../utils';
+import { BaseModel } from './baseModel';
+import { logger, Onboarding } from '../utils';
 import { OnboardingStatus } from '@/constants';
+import { IOnboardingModel } from './interfaces';
 
-export class OnboardingModel extends BaseModel {
+export class OnboardingModel extends BaseModel implements IOnboardingModel {
 
     constructor() {
         super();
         logger.info('OnboardingModel initialized');
     }
 
-    // Haal alle onboarding records op met een specifieke status
     /**
      * Retrieves all onboarding records with the specified status.
      *
@@ -20,11 +19,13 @@ export class OnboardingModel extends BaseModel {
     public async getAllByStatus(status: OnboardingStatus): Promise<any[]> {
         const db = await this.db;
         const query = `
-            SELECT * FROM Onboarding
-            WHERE status = ?
+            SELECT Onboarding.*, User.*
+            FROM Onboarding
+            JOIN User ON Onboarding.user_id = User.user_id
+            WHERE Onboarding.status = ?
         `;
         const results = await db.all(query, [status]);
-        return results;  // Retourneer de gevonden records
+        return results;  // Return the found records
     }
 
     // Maak een nieuw record aan voor onboarding
@@ -37,14 +38,19 @@ export class OnboardingModel extends BaseModel {
      * @param onboardingData.status - The status of the onboarding process.
      * @returns A promise that resolves to the ID of the newly created record, or undefined if the operation fails.
      */
-    public async create(onboardingData: { user_id: number; step: string; status: string; }): Promise<number | undefined> {
+    public async create(onboardingData: { user_id: number; step: string; status: string; }): Promise<Onboarding> {
         const db = await this.db;
         const query = `
             INSERT INTO Onboarding (user_id, step, status)
             VALUES (?, ?, ?)
         `;
         const result = await db.run(query, [onboardingData.user_id, onboardingData.step, onboardingData.status]);
-        return result.lastID;  // Retourneer het ID van het aangemaakte record
+        if (result.lastID !== undefined) {
+            const newOnboarding = await this.getById(result.lastID);
+            return newOnboarding;  // Return the newly created onboarding object
+        }
+        throw new Error('Failed to create onboarding record');
+
     }
 
     // Haal een onboarding record op via het ID

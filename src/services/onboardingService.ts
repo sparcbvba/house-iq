@@ -5,13 +5,25 @@ import { HouseService, InstallationService } from "./";
 import { IInstallationService } from "./interfaces";
 
 export class OnboardingService {
-
     private onboardingModel: OnboardingModel = new OnboardingModel();
     private houseService: HouseService = new HouseService();
     private installationService: IInstallationService = new InstallationService();
 
     constructor() {
         logger.info('OnboardingService initialized');
+    }
+
+    public async createOnboarding(onboarding: Onboarding): Promise<Onboarding> {
+        const newOnboarding = await this.onboardingModel.create({
+            user_id: onboarding.user_id !== null ? onboarding.user_id : 0,
+            step: onboarding.step,
+            status: OnboardingStatus.IN_PROGRESS
+        });
+
+        if (!newOnboarding) {
+            throw new Error('Failed to create onboarding.');
+        }
+        return newOnboarding;
     }
 
     /**

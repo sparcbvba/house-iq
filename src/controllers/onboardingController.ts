@@ -2,7 +2,7 @@ import { OnboardingService } from './../services/onboardingService';
 import { NextFunction, Request, Response } from 'express';
 import { Views } from '../constants/viewConstants';
 import { AuthService } from '../services/authService';
-import { OnboardingSteps } from '../constants/onboardingConstants';
+import { OnboardingStatus, OnboardingSteps } from '../constants/onboardingConstants';
 import { logger } from '../utils';
 
 export class OnboardingController {
@@ -34,6 +34,8 @@ export class OnboardingController {
         try {
             const ongoingProcesses = await this.onboardingService.getOngoingProcesses();
             const completedProcesses = await this.onboardingService.getCompletedProcesses();
+            logger.info('Ongoing processes:', ongoingProcesses);
+            logger.info('Completed processes:', completedProcesses);
             res.render('private/onboarding/onboarding_overview', {
                 ongoingProcesses,
                 completedProcesses
@@ -88,9 +90,17 @@ export class OnboardingController {
             const { email, password, first_name, last_name } = req.body;
             logger.info('Creating user ' + first_name + ' ' + last_name);
             logger.info('authService: ' + this.authService);
-            const registrationResult = await this.authService.register(email, password, first_name, last_name);
+            const registrationResultId = await this.authService.register(email, password, first_name, last_name);
 
-            if (registrationResult) {
+            if (registrationResultId) {
+                await this.onboardingService.createOnboarding({
+                    user_id: registrationResultId,
+                    step: OnboardingSteps.CREATE_USER,
+                    onboarding_id: 0,
+                    house_id: null,
+                    installation_id: null,
+                    status: OnboardingStatus.IN_PROGRESS
+                });
                 // Render the next step view
                 res.render(this.getViewForStep(OnboardingSteps.HOUSE_CREATION), { title: "House creation" });
             } else {
