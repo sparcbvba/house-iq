@@ -1,7 +1,7 @@
 // src/models/userModel.ts
 import { logger } from '../utils';
 import { AppUser } from '../utils/types';
-import { BaseModel } from './baseModel';
+import { BaseModel } from './base.model';
 
 export class UserModel extends BaseModel {
 

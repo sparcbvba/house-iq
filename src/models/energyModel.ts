@@ -1,6 +1,6 @@
 // src/models/EnergyModel.ts
 import { logger } from '@/utils';
-import { BaseModel } from './baseModel';
+import { BaseModel } from './base.model';
 
 export class EnergyModel extends BaseModel {
 

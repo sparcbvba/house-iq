@@ -1,5 +1,5 @@
 /* Module-augmentatie voor express-session */
-import { OnboardingStatus, OnboardingSteps } from '../constants';
+import { OnboardingStatus } from '../constants';
 import 'express-session';
 
 export interface MenuItem {
@@ -9,18 +9,14 @@ export interface MenuItem {
 }
 
 export interface Installation {
-    id: number;
+    installation_id: number;
+    house_id: number;
     name: string;
+    installation_date: Date;
+    status: string;
     url: string;
-    street: string;
-    number: string;
-    postal_code: string;
-    city: string;
-    country: string;
-    update_available: number; // 0 of 1
-    installed_version: string;
-    latest_version: string;
-    last_entity_fetch: string;
+    token: string;
+    code: string;
 }
 
 // src/utils/types.ts
@@ -48,7 +44,6 @@ export interface Onboarding {
     user_id: number | null;
     house_id: number | null;
     installation_id: number | null;
-    step: OnboardingSteps;
     status: OnboardingStatus;
     created_at?: Date;
     updated_at?: Date;

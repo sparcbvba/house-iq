@@ -17,6 +17,10 @@ export class InstallationService implements IInstallationService {
         logger.info('InstallationService initialized');
     }
 
+    verifyInstallation(installation_id: any): unknown {
+        throw new Error('Method not implemented.');
+    }
+
     /**
      * Retrieves the installation link for a given installation ID.
      *

@@ -1,6 +1,6 @@
 // src/models/HomeModel.ts
 import { Home, logger } from '../utils';
-import { BaseModel } from './baseModel';
+import { BaseModel } from './base.model';
 
 
 /**

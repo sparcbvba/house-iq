@@ -1,5 +1,5 @@
 // src/models/installationUserModel.ts
-import { BaseModel } from './baseModel';
+import { BaseModel } from './base.model';
 import { InstallationUser } from '../utils/types';
 import { logger } from '../utils';
 

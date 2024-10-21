@@ -18,8 +18,7 @@ async function migrateDatabase() {
             user_id INTEGER,          -- Verwijzing naar de aangemaakte gebruiker
             house_id INTEGER,         -- Verwijzing naar het huis (null totdat het is aangemaakt)
             installation_id INTEGER,  -- Verwijzing naar de installatie (null totdat deze is toegevoegd)
-            step TEXT NOT NULL,       -- Huidige stap in het onboardingproces ('user_created', 'house_created', 'installation_added', 'installation_verified')
-            status TEXT NOT NULL,     -- Status van de stap ('pending', 'in_progress', 'completed')
+            status TEXT NOT NULL,     -- Status van de stap ('pending', 'cancelled', 'completed')
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES User(user_id),
